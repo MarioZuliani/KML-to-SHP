@@ -1,0 +1,33 @@
+---
+title: "KML to SHP"
+author: "Mario"
+date: "28/06/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+###Load in Packages
+library(raster)
+library(sf)
+library(rgdal)
+library(dplyr)
+library(rgeos)
+library(maptools)
+library(ggplot2)
+library(ggrepel)
+```
+
+```{r}
+#Read in KML file
+st_layers("Tecopa_open.kml")
+
+st_read("Tecopa_open.kml") -> TecOpen  #still reads the Z values, shapefile should only XY (2D)
+```
+```{r}
+#Set up KML file and Convert to SHP
+TecOpen_n <- st_zm(TecOpen[1], drop=T, what='ZM')
+as.data.frame(TecOpen_n) -> TecOpen.df
+as(TecOpen_n, "Spatial") -> polygon.TecOpen
+#st_write(TecOpen_n, dsn= "Tecopa_Open", driver= "ESRI Shapefile",'Tecopa_oepn.shp')
+```
